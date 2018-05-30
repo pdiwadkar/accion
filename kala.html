@@ -1,0 +1,29 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #555555; font-weight: bold">@GetMapping</span><span style="color: #333333">(</span><span style="background-color: #fff0f0">&quot;/productSearch/{typeAhead}&quot;</span><span style="color: #333333">)</span>
+    <span style="color: #008800; font-weight: bold">public</span> List<span style="color: #333333">&lt;</span>String<span style="color: #333333">&gt;</span> <span style="color: #0066BB; font-weight: bold">searchTypeAhead</span><span style="color: #333333">(</span><span style="color: #555555; font-weight: bold">@PathVariable</span><span style="color: #333333">(</span><span style="background-color: #fff0f0">&quot;typeAhead&quot;</span><span style="color: #333333">)</span> String word<span style="color: #333333">)</span> <span style="color: #008800; font-weight: bold">throws</span> IOException <span style="color: #333333">{</span>
+    	<span style="color: #888888">/*</span>
+<span style="color: #888888">    	 * Use high level search query to request index.</span>
+<span style="color: #888888">    	 */</span>
+    	<span style="color: #008800; font-weight: bold">final</span> String productCategory<span style="color: #333333">=</span><span style="background-color: #fff0f0">&quot;productCategoryName&quot;</span><span style="color: #333333">;</span>
+    	List<span style="color: #333333">&lt;</span>String<span style="color: #333333">&gt;</span> searchList <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">new</span> ArrayList<span style="color: #333333">&lt;&gt;();</span>
+    	SearchRequest request <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">new</span> SearchRequest<span style="color: #333333">(</span>INDEX<span style="color: #333333">);</span>
+    	
+    	SearchSourceBuilder builder <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">new</span> SearchSourceBuilder<span style="color: #333333">();</span>
+    	builder<span style="color: #333333">.</span><span style="color: #0000CC">fetchSource</span><span style="color: #333333">(</span>productCategory<span style="color: #333333">,</span><span style="color: #008800; font-weight: bold">null</span><span style="color: #333333">);</span>
+    	
+    	builder<span style="color: #333333">.</span><span style="color: #0000CC">query</span><span style="color: #333333">(</span>QueryBuilders<span style="color: #333333">.</span><span style="color: #0000CC">matchQuery</span><span style="color: #333333">(</span><span style="background-color: #fff0f0">&quot;descriptionForTypeAhead&quot;</span><span style="color: #333333">,</span> word<span style="color: #333333">));</span>
+request<span style="color: #333333">.</span><span style="color: #0000CC">source</span><span style="color: #333333">(</span>builder<span style="color: #333333">);</span>
+    	SearchResponse response <span style="color: #333333">=</span> client<span style="color: #333333">.</span><span style="color: #0000CC">search</span><span style="color: #333333">(</span>request<span style="color: #333333">);</span>
+    	String current_product_cat<span style="color: #333333">=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #333333">;</span>
+    	SearchHits hits <span style="color: #333333">=</span> response<span style="color: #333333">.</span><span style="color: #0000CC">getHits</span><span style="color: #333333">();</span>
+    	
+    	<span style="color: #008800; font-weight: bold">for</span><span style="color: #333333">(</span>SearchHit <span style="color: #997700; font-weight: bold">hit:</span>hits<span style="color: #333333">)</span> <span style="color: #333333">{</span>
+    		        		
+        	Map<span style="color: #333333">&lt;</span>String<span style="color: #333333">,</span>Object<span style="color: #333333">&gt;</span> map <span style="color: #333333">=</span> hit<span style="color: #333333">.</span><span style="color: #0000CC">getSourceAsMap</span><span style="color: #333333">();</span>
+        	Set<span style="color: #333333">&lt;</span>String<span style="color: #333333">&gt;</span> keySet <span style="color: #333333">=</span> map<span style="color: #333333">.</span><span style="color: #0000CC">keySet</span><span style="color: #333333">();</span>        	
+        	searchList<span style="color: #333333">.</span><span style="color: #0000CC">add</span><span style="color: #333333">((</span>String<span style="color: #333333">)</span>map<span style="color: #333333">.</span><span style="color: #0000CC">get</span><span style="color: #333333">(</span>productCategory<span style="color: #333333">));</span>        	
+        	<span style="color: #333333">}</span>    		  	
+    		
+      searchList <span style="color: #333333">=</span> searchList<span style="color: #333333">.</span><span style="color: #0000CC">stream</span><span style="color: #333333">().</span><span style="color: #0000CC">distinct</span><span style="color: #333333">().</span><span style="color: #0000CC">collect</span><span style="color: #333333">(</span>Collectors<span style="color: #333333">.</span><span style="color: #0000CC">toList</span><span style="color: #333333">());</span>
+        <span style="color: #008800; font-weight: bold">return</span> searchList<span style="color: #333333">;</span>
+    <span style="color: #333333">}</span>
+</pre></div>
