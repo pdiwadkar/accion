@@ -1,0 +1,28 @@
+<pre style='color:#000000;background:#ffffff;'>@GetMapping("/productSearch/<span style='color:#800080; '>{</span>typeAhead<span style='color:#800080; '>}</span>")
+    <span style='color:#800000; font-weight:bold; '>public</span> List&lt;String> searchTypeAhead(@PathVariable("typeAhead") String word) <span style='color:#800000; font-weight:bold; '>throws</span> IOException <span style='color:#800080; '>{</span>
+    	<span style='color:#696969; '>/*</span>
+<span style='color:#696969; '>&#xa0;&#xa0;&#xa0;&#xa0;	 * Use high level search query to request index.</span>
+<span style='color:#696969; '>&#xa0;&#xa0;&#xa0;&#xa0;	 */</span>
+    	<span style='color:#800000; font-weight:bold; '>final</span> <span style='color:#bb7977; font-weight:bold; '>String</span> productCategory<span style='color:#808030; '>=</span><span style='color:#0000e6; '>"productCategoryName"</span><span style='color:#800080; '>;</span>
+    	<span style='color:#bb7977; font-weight:bold; '>List</span><span style='color:#808030; '>&lt;</span><span style='color:#bb7977; font-weight:bold; '>String</span><span style='color:#808030; '>></span> searchList <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>new</span> ArrayList<span style='color:#808030; '>&lt;</span><span style='color:#808030; '>></span><span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+    	SearchRequest request <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>new</span> SearchRequest<span style='color:#808030; '>(</span>INDEX<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+    	
+    	SearchSourceBuilder builder <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>new</span> SearchSourceBuilder<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+    	builder<span style='color:#808030; '>.</span>fetchSource<span style='color:#808030; '>(</span>productCategory<span style='color:#808030; '>,</span><span style='color:#800000; font-weight:bold; '>null</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+    	
+    	<span style='color:#696969; '>//builder.query(QueryBuilders.matchQuery("descriptionForTypeAhead", word));</span>
+    	request<span style='color:#808030; '>.</span>source<span style='color:#808030; '>(</span>builder<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+    	SearchResponse response <span style='color:#808030; '>=</span> client<span style='color:#808030; '>.</span>search<span style='color:#808030; '>(</span>request<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+    	<span style='color:#bb7977; font-weight:bold; '>String</span> current_product_cat<span style='color:#808030; '>=</span><span style='color:#0000e6; '>""</span><span style='color:#800080; '>;</span>
+    	SearchHits hits <span style='color:#808030; '>=</span> response<span style='color:#808030; '>.</span>getHits<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+    	
+    	<span style='color:#800000; font-weight:bold; '>for</span><span style='color:#808030; '>(</span>SearchHit hit<span style='color:#808030; '>:</span>hits<span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+    		        		
+        	Map<span style='color:#808030; '>&lt;</span><span style='color:#bb7977; font-weight:bold; '>String</span><span style='color:#808030; '>,</span><span style='color:#bb7977; font-weight:bold; '>Object</span><span style='color:#808030; '>></span> map <span style='color:#808030; '>=</span> hit<span style='color:#808030; '>.</span>getSourceAsMap<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+        	Set<span style='color:#808030; '>&lt;</span><span style='color:#bb7977; font-weight:bold; '>String</span><span style='color:#808030; '>></span> keySet <span style='color:#808030; '>=</span> map<span style='color:#808030; '>.</span>keySet<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+        	searchList<span style='color:#808030; '>.</span>add<span style='color:#808030; '>(</span><span style='color:#808030; '>(</span><span style='color:#bb7977; font-weight:bold; '>String</span><span style='color:#808030; '>)</span>map<span style='color:#808030; '>.</span>get<span style='color:#808030; '>(</span>productCategory<span style='color:#808030; '>)</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+        	<span style='color:#800080; '>}</span>    		  	
+    	searchList <span style='color:#808030; '>=</span> searchList<span style='color:#808030; '>.</span>stream<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>.</span>distinct<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>.</span>collect<span style='color:#808030; '>(</span>Collectors<span style='color:#808030; '>.</span>toList<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+        <span style='color:#800000; font-weight:bold; '>return</span> searchList<span style='color:#800080; '>;</span>
+    <span style='color:#800080; '>}</span>
+</pre>
